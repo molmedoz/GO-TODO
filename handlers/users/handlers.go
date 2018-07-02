@@ -103,11 +103,12 @@ func LogoutHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	id := req.Header.Get("username")
-	password := req.Header.Get("token")
-	_, err := userservice.Logout(id, password)
+	token := req.Header.Get("token")
+	_, err := userservice.Logout(id, token)
 	if err != nil {
 		handlers.ErrorResponseHandler(w, req, err)
 	}
+
 }
 func validateLoginBody(body interface{}) (string, string, error) {
 	if body == nil {

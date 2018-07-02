@@ -10,6 +10,7 @@ import (
 	"todo/model/errors/input"
 	"todo/model/task"
 	"todo/services/todo"
+	"todo/services/user"
 )
 
 type update struct {
@@ -24,11 +25,13 @@ func TodoListHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	user := req.Header.Get("username")
-	encoder := json.NewEncoder(w)
-	if user == "" {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+	token := req.Header.Get("token")
+	_, err := userservice.CheckSession(user, token)
+	if err != nil {
+		handlers.ErrorResponseHandler(w, req, err)
 		return
 	}
+	encoder := json.NewEncoder(w)
 	if req.Method == http.MethodGet {
 		result, err := todoservice.GetList(user)
 		if err != nil {
@@ -59,8 +62,10 @@ func TodoTaskHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	user := req.Header.Get("username")
-	if user == "" {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+	token := req.Header.Get("token")
+	_, err := userservice.CheckSession(user, token)
+	if err != nil {
+		handlers.ErrorResponseHandler(w, req, err)
 		return
 	}
 	ids := strings.Split(req.URL.Path, "/")[3]

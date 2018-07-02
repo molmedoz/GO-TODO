@@ -47,38 +47,31 @@ func SignUp(id string, password string) (user.User, error) {
 }
 
 // Logout end user sesion
-func Logout(id string, password string) (string, error) {
-	// lUser
+func Logout(id string, token string) (string, error) {
 	u := user.New(id)
 	err := u.Load()
-	var token string
-	var logged bool
-	if err != nil {
-		token = ""
-	} else {
-		logged, err = u.CheckCredentials(password)
-		if err != nil {
-			return "", err
-		}
-		if !logged {
-			err = autherror.New()
-		} else {
-			err = u.SaveSesion("")
-		}
+	if err == nil {
+		return "", nil
 	}
-	return token, err
+	err = u.SaveSesion("")
+	return "", err
 }
 
-// CheckSesion Check if a user is loging in a sesion
-func CheckSesion(id string, token string) (bool, error) {
-	// lUser
+// CheckSession Check if a user is loging in a sesion
+func CheckSession(id string, token string) (bool, error) {
+	if id == "" || token == "" {
+		return false, autherror.New()
+	}
 	u := user.New(id)
 	err := u.Load()
 	var logged = false
 	if err == nil {
 		logged = token == u.Token
-		err = nil
+		if !logged {
+			err = autherror.New()
+		}
 	}
+
 	return logged, err
 
 }

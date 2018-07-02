@@ -1,0 +1,14 @@
+CREATE TABLE IF NOT EXISTS USERS (
+  id VARCHAR2(50) PRIMARY KEY,
+  salt VARCHAR(50) NOT NULL,
+  password VARCHAR2 NOT NULL,
+  token VARCHAR2 DEFAULT ""
+);
+CREATE TABLE IF NOT EXISTS TASKS (
+  id integer primary key AUTOINCREMENT,
+  description VARCHAR2(200) NOT NULL,
+  done BOOLEAN default false,
+  user VARCHAR2(50),
+
+  FOREIGN KEY (user) REFERENCES USERS(id)
+);

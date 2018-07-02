@@ -36,7 +36,7 @@ func main() {
 	})
 	mux.HandleFunc("/login", userhandler.LoginHandler)
 	mux.HandleFunc("/signup", userhandler.SignUpHandler)
-	mux.HandleFunc("/logout", userhandler.Logout)
+	mux.HandleFunc("/logout", userhandler.LogoutHandler)
 	mux.HandleFunc("/api/todo", todohandlers.TodoListHandler) //func(w http.ResponseWriter, req *http.Request) {
 	mux.HandleFunc("/api/todo/", todohandlers.TodoTaskHandler)
 

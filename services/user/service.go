@@ -48,12 +48,15 @@ func SignUp(id string, password string) (user.User, error) {
 
 // Logout end user sesion
 func Logout(id string, token string) (string, error) {
+	if id == "" || token == "" {
+		return "", autherror.New()
+	}
 	u := user.New(id)
 	err := u.Load()
 	if err == nil {
-		return "", nil
+		err = u.SaveSesion("")
 	}
-	err = u.SaveSesion("")
+
 	return "", err
 }
 

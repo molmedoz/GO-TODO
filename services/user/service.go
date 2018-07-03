@@ -54,7 +54,11 @@ func Logout(id string, token string) (string, error) {
 	u := user.New(id)
 	err := u.Load()
 	if err == nil {
-		err = u.SaveSesion("")
+		if u.Token == token {
+			err = u.SaveSesion("")
+		} else {
+			err = autherror.New()
+		}
 	}
 
 	return "", err

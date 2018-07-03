@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"todo/model/errors/auth"
@@ -17,15 +18,16 @@ func ErrorResponseHandler(w http.ResponseWriter, req *http.Request, err error) {
 	fmt.Println(err, err.Error())
 	switch err.(type) {
 	case *inputerror.InputError:
-		http.Error(w, "Bad Request", http.StatusBadRequest)
+		encoder := json.NewEncoder(w)
+		w.Header().Set("content-type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		encoder.Encode(err)
 		return
 	case *notfounderror.NotFoundError:
-		http.NotFound(w, req)
+		w.WriteHeader(http.StatusNotFound)
 		return
 	case *autherror.AuthError:
-		http.Error(w, "Unauthorozed", http.StatusUnauthorized)
-	default:
-		http.Error(w, "Something is wrong", http.StatusInternalServerError)
+		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 }
